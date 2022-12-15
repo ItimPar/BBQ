@@ -69,7 +69,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'UTC'),
 
     /*
     |--------------------------------------------------------------------------
@@ -195,10 +195,6 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
-        /*
-         * Paper Frontend Preset Service Providers...
-         */
-        LaravelFrontendPresets\PaperPreset\PaperPresetServiceProvider::class,
     ],
 
     /*

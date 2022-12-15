@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MainController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,25 +17,28 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('index');
 });
 
-Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-Auth::routes();
-
-Route::get('/home', 'App\Http\Controllers\HomeController@index')->name('home');
-
-Route::group(['middleware' => 'auth'], function () {
-	Route::resource('user', 'App\Http\Controllers\UserController', ['except' => ['show']]);
-	Route::get('profile', ['as' => 'profile.edit', 'uses' => 'App\Http\Controllers\ProfileController@edit']);
-	Route::put('profile', ['as' => 'profile.update', 'uses' => 'App\Http\Controllers\ProfileController@update']);
-	Route::put('profile', ['as' => 'profile.create', 'uses' => 'App\Http\Controllers\ProfileController@create']);
-	Route::put('profile/password', ['as' => 'profile.password', 'uses' => 'App\Http\Controllers\ProfileController@password']);
+Route::controller(MainController::class)->group(function () {
+    Route::get('/login','login')->name('login');
+    Route::post('/login/check','loginCheck')->name('login.check');
+    Route::get('/register','register')->name('register');
+    Route::post('/register/check','registerCheck')->name('register.check');
+    Route::get('/logout','logout')->name('logout');
 });
 
-Route::group(['middleware' => 'auth'], function () {
-	Route::get('{page}', ['as' => 'page.index', 'uses' => 'App\Http\Controllers\PageController@index']);
+Route::controller(DashboardController::class)->group(function () {
+    Route::get('/dashboard','index')->name('dashboard.index');
+    Route::get('/dashboard/user','allUser')->name('dashboard.users');
+});
+
+Route::controller(UserController::class)->group(function () {
+    Route::get('/dashboard/user/create','create')->name('user.create');
+    Route::post('/dashboard/user/store','store')->name('user.store');
+    Route::get('/dashboard/user/edit/{id}','edit')->name('user.edit');
+    Route::post('/dashboard/user/update/{id}','update')->name('user.update');
+    Route::get('/dashboard/user/delete/{id}','delete')->name('user.delete');
+
 });
 
