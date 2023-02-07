@@ -1,38 +1,64 @@
-@extends('layouts.master')
+@extends('layouts.index')
 
 @section('content')
+    <div class="overlay"></div>
 
-    <div class="logo">
-        <img src="{{ asset('img') }}/logo.png"width="172.09px";
-        height="189.81px">
-    </div>
-    <div class="title-bar"></div>
-    <div class="img-bg"></div>
-    @guest
-    <div class="register">
-        <b><a href="{{ route('register') }}">Register</a></b>
-    </div>
-    <div class="login">
-        <b><a href="{{ route('login') }}">Login</a></b>
-    </div>
-    @else
-    <b><a href="{{ route('logout') }}">Logout</a></b>
+    <div class="top-bar">
+        <div class="logo">
+            <a href="{{ route('index') }}"><img src="{{ asset('img') }}/logo.png" alt=""></a>
+        </div>
+        <div class="top-main">
 
-    @endguest
-    <div class="queue-top">
-        <a href="index.html">จองคิว</a>
+            @guest
+                <div class="register">
+                    <a href="{{ route('register') }}">Register</a>
+                </div>
+                <div class="login">
+                    <a href="{{ route('login') }}">Login</a>
+                </div>
+                <div class="top-queue">
+                    <form action="{{ route('user.queue') }}">
+                        <button type="submit" class="top-btn-queue">จองคิว</button>
+                    </form>
+                </div>
+            @else
+            <div class="top-queue">
+                <form action="{{ route('user.queue') }}">
+                    <button type="submit" class="top-btn-queue">จองคิว</button>
+                </form>
+            </div>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <div class="top-queue">
+                        <button class="top-btn-queue" style="right:100px;" href="{{ route('logout') }}"
+                            onclick="event.preventDefault();
+                            this.closest('form').submit(); "
+                            role="button" >
+                            {{ __('Log Out') }}
+                        </button>
+                    </div>
+                </form>
+                @endguest
+
+
+        </div>
+
     </div>
 
-    <div class="bottom"></div>
-    <div class="text-Contract">
-        ช่องทางการติดต่อ<br>
-        Fb : Parm Weerapat<br>
-        Fb : Parinat Kanyala
-    </div>
-    <div class="text-address">
-        ที่อยู่ทางร้าน<br>
-        บ้านเลขที่ 255 ถ.บูรพาใน ต.ในเมือง
-        อ.เมือง จ.อุบลราชธานี 34000
-    </div>
+    <div class="ctn-main">
 
-@stop
+        <div class="center-text">
+            <h1>Welcome to</h1>
+            <div class="center-texts">
+                <h1>Barber Shop</h1>
+            </div>
+            <div class="queue">
+                <form action="{{ route('user.queue') }}">
+                    <button type="submit" class="btn-queue">จองคิว</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="bottom-bar">
+        </div>
+    @endsection

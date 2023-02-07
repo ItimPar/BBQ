@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use App\Models\Queue;
 use Hash;
 
 class UserController extends Controller
@@ -31,6 +33,7 @@ class UserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
             'telephone' => $request->telephone,
+            'status' => 'customer',
         ]);
 
         return redirect()->route('dashboard.users')->with('success','เพิ่มข้อมูลเรียบร้อย');
@@ -50,6 +53,7 @@ class UserController extends Controller
             'username' => 'required',
             'email' => 'required',
             'telephone' => 'required',
+            'password' => 'min:8',
         ]);
 
 
@@ -70,4 +74,34 @@ class UserController extends Controller
         $delete = User::find($id)->forceDelete();
         return redirect()->back()->with('success','ลบข้อมูลเรียบร้อย');
     }
+
+    function userQueue()
+    {
+        // check if user is not logged in
+        if (!Auth::user()) {
+            return redirect('login');
+        }
+        $barber = User::where('status','barber')->get();
+        return view('dashboard.user.userQueue')->with('barber',$barber);
+
+    }
+
+    function userQueueHistory($scope)
+    {
+        if ($scope == 'active') {
+            $queueList = Queue::where('user_id',Auth::user()->id)->where('status', '<>', 'เลยกำหนด')->where('status', '<>', 'ยกเลิก')->orderBy('start', 'DESC')->paginate(8);
+        }
+        //only active queue list
+        else {
+            $queueList = Queue::where('user_id',Auth::user()->id)->orderBy('start', 'DESC')->paginate(8);
+        }
+        return view('dashboard.user.history')->with('queueList',$queueList);
+    }
+
+    function userProfile()
+    {
+        $user = User::find(Auth::user()->id);
+        return view('dashboard.user.profile')->with('user',$user);
+    }
+
 }
